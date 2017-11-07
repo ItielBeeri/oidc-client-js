@@ -105,6 +105,14 @@ export default class UserManager extends OidcClient {
         });
     }
     
+    signinSilentThenPopup(args) {
+        Log.debug('userManager.signinSilentThenPopup');
+        return this.signinSilent(args).catch(err => {
+            Log.info('silentSignin has failed. Falling back to signinPopup. Failure: ' + err);
+            return this.signinPopup(args);
+        });
+    }
+
     signinPopup(args = {}) {
         Log.debug("UserManager.signinPopup");
 
