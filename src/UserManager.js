@@ -83,8 +83,27 @@ export default class UserManager extends OidcClient {
         });
     }
 
+    signinUniversalCallback(url) {
+        Log.debug("UserManager.signinUniversalCallback");
+        return this._getStateValue(url, "signinType").then(signinType => {
+            switch (signinType) {
+                case "redirect":
+                    return this.signinRedirectCallback(url);
+                case "popup":
+                    return this.signinPopupCallback(url);
+                case "silent":
+                    return this.signinSilentCallback(url);
+            }
+            let err = 'Unrecognized sign-in method found when invoking callback method: ' + signinType;
+            Log.error(err);
+            throw new Error(err);
+        });
+    }
+
     signinRedirect(args) {
         Log.debug("UserManager.signinRedirect");
+
+        args = this._getSigninArgs(args, "redirect");
         return this._signinStart(args, this._redirectNavigator).then(()=>{
             Log.info("signinRedirect successful");
         });
@@ -108,6 +127,7 @@ export default class UserManager extends OidcClient {
     signinPopup(args = {}) {
         Log.debug("UserManager.signinPopup");
 
+        args = this._getSigninArgs(args, "popup");
         let url = args.redirect_uri || this.settings.popup_redirect_uri || this.settings.redirect_uri;
         if (!url) {
             Log.error("No popup_redirect_uri or redirect_uri configured");
@@ -153,6 +173,7 @@ export default class UserManager extends OidcClient {
     signinSilent(args = {}) {
         Log.debug("UserManager.signinSilent");
 
+        args = this._getSigninArgs(args, "silent");
         let url = args.redirect_uri || this.settings.silent_redirect_uri;
         if (!url) {
             Log.error("No silent_redirect_uri configured");
@@ -206,9 +227,19 @@ export default class UserManager extends OidcClient {
         });
     }
 
+    _getSigninArgs(args, signinType) {
+        if (this.settings.supportUniversalCallback) {
+            args = args || {};
+            args.data = args.data || {};
+            args.data.signinType = signinType;
+        }
+        return args;
+    }
+
     querySessionStatus(args = {}) {
         Log.debug("UserManager.querySessionStatus");
 
+        args = this._getSigninArgs(args, "silent");
         let url = args.redirect_uri || this.settings.silent_redirect_uri;
         if (!url) {
             Log.error("No silent_redirect_uri configured");
