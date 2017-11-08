@@ -28,6 +28,7 @@ export default class UserManagerSettings extends OidcClientSettings {
         checkSessionInterval = DefaultCheckSessionInterval,
         revokeAccessTokenOnSignout = false,
         accessTokenExpiringNotificationTime = DefaultAccessTokenExpiringNotificationTime,
+        supportUniversalCallback = false,
         redirectNavigator = new RedirectNavigator(),
         popupNavigator = new PopupNavigator(),
         iframeNavigator = new IFrameNavigator(),
@@ -47,7 +48,8 @@ export default class UserManagerSettings extends OidcClientSettings {
         this._defaultAutomaticRenewStyle = defaultAutomaticRenewStyle;
         this._includeIdTokenInSilentRenew = includeIdTokenInSilentRenew;
         this._accessTokenExpiringNotificationTime = accessTokenExpiringNotificationTime;
-
+        this._supportUniversalCallback = supportUniversalCallback;
+        
         this._monitorSession = monitorSession;
         this._checkSessionInterval = checkSessionInterval;
         this._revokeAccessTokenOnSignout = revokeAccessTokenOnSignout;
@@ -64,7 +66,7 @@ export default class UserManagerSettings extends OidcClientSettings {
     }
 
     get popup_redirect_uri() {
-        return this._popup_redirect_uri;
+        return this._supportUniversalCallback ? this._popup_redirect_uri || this._redirect_uri : this._popup_redirect_uri;
     }
     get popup_post_logout_redirect_uri() {
         return this._popup_post_logout_redirect_uri;
@@ -77,7 +79,7 @@ export default class UserManagerSettings extends OidcClientSettings {
     }
 
     get silent_redirect_uri() {
-        return this._silent_redirect_uri;
+        return this._supportUniversalCallback ? this._silent_redirect_uri || this._redirect_uri : this._silent_redirect_uri;
     }
      get silentRequestTimeout() {
         return this._silentRequestTimeout;
@@ -90,6 +92,9 @@ export default class UserManagerSettings extends OidcClientSettings {
     }
     get accessTokenExpiringNotificationTime() {
         return this._accessTokenExpiringNotificationTime;
+    }
+    get supportUniversalCallback() {
+        return this._supportUniversalCallback;
     }
 
     get monitorSession() {

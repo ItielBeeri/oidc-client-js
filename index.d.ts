@@ -205,6 +205,7 @@ export interface UserManagerSettings extends OidcClientSettings {
   checkSessionInterval?: number;
   revokeAccessTokenOnSignout?: any;
   accessTokenExpiringNotificationTime?: number;
+  supportUniversalCallback?: boolean;
   redirectNavigator?: any;
   popupNavigator?: any;
   iframeNavigator?: any;
