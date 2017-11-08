@@ -192,6 +192,7 @@ export interface UserManagerEvents extends AccessTokenEvents {
 }
 
 export interface UserManagerSettings extends OidcClientSettings {
+  redirectBackToSigninInitiator?: boolean;
   popup_redirect_uri?: string;
   popupWindowFeatures?: string;
   popupWindowTarget?: any;
