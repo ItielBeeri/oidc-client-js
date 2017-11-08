@@ -15,6 +15,7 @@ export const CheckSessionIFrame = require('./src/CheckSessionIFrame');
 export const TokenRevocationClient = require('./src/TokenRevocationClient');
 export const SessionMonitor = require('./src/SessionMonitor');
 export const Global = require('./src/Global'); 
+export const AutomaticRenewStyle = require('./src/AutomaticRenewStyle');
 
 export default {
     Log,
@@ -30,5 +31,6 @@ export default {
     CheckSessionIFrame,
     TokenRevocationClient,
     SessionMonitor,
-    Global
+    Global,
+    AutomaticRenewStyle
 };

@@ -3,6 +3,7 @@
 
 import Log from './Log';
 import OidcClientSettings from './OidcClientSettings';
+import AutomaticRenewStyle from './AutomaticRenewStyle'
 import RedirectNavigator from './RedirectNavigator';
 import PopupNavigator from './PopupNavigator';
 import IFrameNavigator from './IFrameNavigator';
@@ -20,7 +21,7 @@ export default class UserManagerSettings extends OidcClientSettings {
         popupWindowTarget,
         silent_redirect_uri,
         silentRequestTimeout,
-        automaticSilentRenew = false,
+        defaultAutomaticRenewStyle = AutomaticRenewStyle.none,
         includeIdTokenInSilentRenew = true,
         monitorSession = true,
         checkSessionInterval = DefaultCheckSessionInterval,
@@ -40,7 +41,7 @@ export default class UserManagerSettings extends OidcClientSettings {
         
         this._silent_redirect_uri = silent_redirect_uri;
         this._silentRequestTimeout = silentRequestTimeout;
-        this._automaticSilentRenew = !!automaticSilentRenew;
+        this._defaultAutomaticRenewStyle = defaultAutomaticRenewStyle;
         this._includeIdTokenInSilentRenew = includeIdTokenInSilentRenew;
         this._accessTokenExpiringNotificationTime = accessTokenExpiringNotificationTime;
 
@@ -74,8 +75,8 @@ export default class UserManagerSettings extends OidcClientSettings {
      get silentRequestTimeout() {
         return this._silentRequestTimeout;
     }
-    get automaticSilentRenew() {
-        return !!(this.silent_redirect_uri && this._automaticSilentRenew);
+    get defaultAutomaticRenewStyle() {
+        return this._defaultAutomaticRenewStyle;
     }
     get includeIdTokenInSilentRenew() {
         return this._includeIdTokenInSilentRenew;

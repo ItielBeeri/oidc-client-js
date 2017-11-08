@@ -198,6 +198,7 @@ export interface UserManagerSettings extends OidcClientSettings {
   silent_redirect_uri?: any;
   silentRequestTimeout?: any;
   automaticSilentRenew?: boolean;
+  defaultAutomaticRenewStyle?: AutomaticRenewStyle;
   includeIdTokenInSilentRenew?: boolean;
   monitorSession?: boolean;
   checkSessionInterval?: number;

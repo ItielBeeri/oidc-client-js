@@ -6,13 +6,15 @@ import OidcClient from './OidcClient';
 import UserManagerSettings from './UserManagerSettings';
 import User from './User';
 import UserManagerEvents from './UserManagerEvents';
+import AutomaticRenewStyle from './AutomaticRenewStyle';
 import SilentRenewService from './SilentRenewService';
+import SilentAndInteractiveRenewService from './SilentAndInteractiveRenewService';
 import SessionMonitor from './SessionMonitor';
 import TokenRevocationClient from './TokenRevocationClient';
 
 export default class UserManager extends OidcClient {
     constructor(settings = {},
-        SilentRenewServiceCtor = SilentRenewService,
+        AutomaticRenewServiceCtor,
         SessionMonitorCtor = SessionMonitor,
         TokenRevocationClientCtor = TokenRevocationClient
     ) {
@@ -23,12 +25,23 @@ export default class UserManager extends OidcClient {
         super(settings);
 
         this._events = new UserManagerEvents(settings);
-        this._silentRenewService = new SilentRenewServiceCtor(this);
         
         // order is important for the following properties; these services depend upon the events.
-        if (this.settings.automaticSilentRenew) {
-            Log.debug("automaticSilentRenew is configured, setting up silent renew");
-            this.startSilentRenew();
+        if (!AutomaticRenewServiceCtor) {
+            switch (this.settings.defaultAutomaticRenewStyle) {
+                case AutomaticRenewStyle.silentOnly:
+                    AutomaticRenewServiceCtor = SilentRenewService;
+                    break;
+                case AutomaticRenewStyle.silentAndInteractive:
+                    AutomaticRenewServiceCtor = SilentAndInteractiveRenewService;
+                    break;
+            }
+        }
+        if (AutomaticRenewServiceCtor) {
+            Log.debug("Automatic renew is configured, setting up renew");
+            this._automaticRenewService = new AutomaticRenewServiceCtor(this);
+            // invoke service out of the c'tor stack
+            setTimeout(this.startRenew.bind(this));
         }
 
         if (this.settings.monitorSession) {
@@ -447,12 +460,12 @@ export default class UserManager extends OidcClient {
         return this._tokenRevocationClient.revoke(access_token, required).then(() => true);
     }
 
-    startSilentRenew() {
-        this._silentRenewService.start();
+    startRenew() {
+        this._automaticRenewService.start();
     }
 
-    stopSilentRenew() {
-        this._silentRenewService.stop();
+    stopRenew() {
+        this._automaticRenewService.stop();
     }
 
     get _userStoreKey() {

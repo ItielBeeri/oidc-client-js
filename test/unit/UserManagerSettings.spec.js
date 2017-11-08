@@ -3,6 +3,7 @@
 
 import Log from '../../src/Log';
 import UserManagerSettings from '../../src/UserManagerSettings';
+import AutomaticRenewStyle from '../../src/AutomaticRenewStyle';
 
 import chai from 'chai';
 chai.should();
@@ -73,32 +74,22 @@ describe("UserManagerSettings", function () {
 
     });
 
-    describe("automaticSilentRenew", function () {
-
+    describe("defaultAutomaticRenewStyle", function () {
+        
         it("should return value from initial settings", function () {
             let subject = new UserManagerSettings({
-                silent_redirect_uri: 'test',
-                automaticSilentRenew: false
+                defaultAutomaticRenewStyle: AutomaticRenewStyle.none
             });
-            subject.automaticSilentRenew.should.be.false;
+            subject.defaultAutomaticRenewStyle.should.equal(AutomaticRenewStyle.none);
         });
 
         it("should use default value", function () {
-            let subject = new UserManagerSettings({
-                silent_redirect_uri: 'test'
-            });
-            subject.automaticSilentRenew.should.be.false;
-        });
-
-        it("should be false if no silent redirect uri", function () {
-            let subject = new UserManagerSettings({
-                automaticSilentRenew: true
-            });
-            subject.automaticSilentRenew.should.be.false;
+            let subject = new UserManagerSettings({});
+            subject.defaultAutomaticRenewStyle.should.equal(AutomaticRenewStyle.none);
         });
 
     });
-
+                
     describe("includeIdTokenInSilentRenew", function () {
         it("should return true value from initial settings", function () {
             let subject = new UserManagerSettings({
