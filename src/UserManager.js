@@ -24,7 +24,7 @@ export default class UserManager extends OidcClient {
 
         this._events = new UserManagerEvents(settings);
         this._silentRenewService = new SilentRenewServiceCtor(this);
-        
+
         // order is important for the following properties; these services depend upon the events.
         if (this.settings.automaticSilentRenew) {
             Log.debug("automaticSilentRenew is configured, setting up silent renew");
@@ -85,26 +85,44 @@ export default class UserManager extends OidcClient {
 
     signinRedirect(args) {
         Log.debug("UserManager.signinRedirect");
-        return this._signinStart(args, this._redirectNavigator).then(()=>{
+
+        if (this.settings.redirectBackToSigninInitiator) {
+            args = args || {};
+            args.data = args.data || {};
+            args.data.initiatorUrl = this._redirectNavigator.url;
+        }
+
+        return this._signinStart(args, this._redirectNavigator).then(() => {
             Log.info("signinRedirect successful");
         });
     }
     signinRedirectCallback(url) {
         Log.debug("UserManager.signinRedirectCallback");
-        return this._signinEnd(url || this._redirectNavigator.url).then(user => {
-            if (user) {
-                if (user.profile && user.profile.sub) {
-                    Log.info("signinRedirectCallback successful, signed in sub: ", user.profile.sub);
-                }
-                else {
-                    Log.info("signinRedirectCallback successful");
-                }
-            }
 
-            return user;
+        let initiatorUrlPromise = Promise.resolve();
+        if (this.settings.redirectBackToSigninInitiator) {
+            initiatorUrlPromise = this._getStateValue(url, "initiatorUrl");
+        }
+
+        return initiatorUrlPromise.then(initiaorUrl => {
+            this._signinEnd(url || this._redirectNavigator.url).then(user => {
+                if (user) {
+                    if (user.profile && user.profile.sub) {
+                        Log.info("signinRedirectCallback successful, signed in sub: ", user.profile.sub);
+                    }
+                    else {
+                        Log.info("signinRedirectCallback successful");
+                    }
+                    if (initiaorUrl) {
+                        Log.info("initiator url was detected in state. redirecting back to " + initiaorUrl);
+                        window.location.href = initiaorUrl;
+                    }
+                }
+                return user;
+            });
         });
     }
-    
+
     signinPopup(args = {}) {
         Log.debug("UserManager.signinPopup");
 
@@ -259,7 +277,7 @@ export default class UserManager extends OidcClient {
 
                 navigatorParams.url = signinRequest.url;
                 navigatorParams.id = signinRequest.state.id;
-                
+
                 return handle.navigate(navigatorParams);
             }).catch(err => {
                 if (handle.close) {

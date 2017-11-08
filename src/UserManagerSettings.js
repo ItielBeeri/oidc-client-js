@@ -14,6 +14,7 @@ const DefaultCheckSessionInterval = 2000;
 
 export default class UserManagerSettings extends OidcClientSettings {
     constructor({
+        redirectBackToSigninInitiator = false,
         popup_redirect_uri,
         popup_post_logout_redirect_uri,
         popupWindowFeatures,
@@ -33,6 +34,8 @@ export default class UserManagerSettings extends OidcClientSettings {
     } = {}) {
         super(arguments[0]);
 
+        this._redirectBackToSigninInitiator = redirectBackToSigninInitiator;
+        
         this._popup_redirect_uri = popup_redirect_uri;
         this._popup_post_logout_redirect_uri = popup_post_logout_redirect_uri;
         this._popupWindowFeatures = popupWindowFeatures;
@@ -53,6 +56,10 @@ export default class UserManagerSettings extends OidcClientSettings {
         this._iframeNavigator = iframeNavigator;
         
         this._userStore = userStore;
+    }
+
+    get redirectBackToSigninInitiator() {
+        return this._redirectBackToSigninInitiator;
     }
 
     get popup_redirect_uri() {
