@@ -148,6 +148,8 @@ export class UserManager extends OidcClient {
 
   signinSilentThenPopup(args?: any): Promise<any>;
   
+  signinUniversalCallback(args?: any): Promise<any>;
+  
   signinPopup(args?: any): Promise<User>;
   signinPopupCallback(url?: string): Promise<any>;
 
