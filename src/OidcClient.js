@@ -89,6 +89,16 @@ export default class OidcClient {
         });
     }
 
+    _getStateValue(url, key) {
+        url = url || window.location.href;
+        let response = new SigninResponse(url);
+        return this.settings.stateStore.get(response.state).then(storageString => {
+            let state = State.fromStorageString(storageString);
+            let value = state.data[key];
+            return value;
+        });
+    }
+
     processSigninResponse(url, stateStore) {
         Log.debug("OidcClient.processSigninResponse");
 
