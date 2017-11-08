@@ -266,3 +266,10 @@ export class CordovaPopupNavigator {
 export class CordovaIFrameNavigator {
   prepare(params: any): Promise<CordovaPopupWindow>;
 }
+
+export class ContinuousSignInManager {
+  constructor(settings: UserManagerSettings);
+
+  initialize(): Promise<any>;
+  getUser(): Promise<User>;  
+}
