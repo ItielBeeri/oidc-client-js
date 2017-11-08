@@ -93,9 +93,13 @@ export default class OidcClient {
         url = url || window.location.href;
         let response = new SigninResponse(url);
         return this.settings.stateStore.get(response.state).then(storageString => {
-            let state = State.fromStorageString(storageString);
-            let value = state.data[key];
-            return value;
+            if(storageString) {
+                let state = State.fromStorageString(storageString);
+                let value = state.data[key];
+                return value; 
+            } else {
+                return null;
+            }
         });
     }
 
