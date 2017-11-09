@@ -8,7 +8,6 @@ export default class ContinuousSignInManager {
         SessionMonitorCtor,
         TokenRevocationClientCtor
     ) {
-        settings.defaultAutomaticRenewStyle = AutomaticRenewStyle.silentAndInteractive;
         this._userManager = new UserManager(settings, AutomaticRenewServiceCtor, SessionMonitorCtor, TokenRevocationClientCtor);
         this._initialized = false;
     }
