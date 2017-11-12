@@ -267,7 +267,7 @@ export class CordovaIFrameNavigator {
   prepare(params: any): Promise<CordovaPopupWindow>;
 }
 
-export class ContinuousSignInManager {
+export class ContinuousSigninManager {
   constructor(settings: UserManagerSettings);
 
   initialize(): Promise<any>;

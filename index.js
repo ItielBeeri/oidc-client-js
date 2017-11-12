@@ -16,7 +16,7 @@ export const TokenRevocationClient = require('./src/TokenRevocationClient');
 export const SessionMonitor = require('./src/SessionMonitor');
 export const Global = require('./src/Global'); 
 export const AutomaticRenewStyle = require('./src/AutomaticRenewStyle');
-export const ContinuousSignInManager = require('./src/ContinuousSignInManager');
+export const ContinuousSigninManager = require('./src/ContinuousSigninManager');
 
 export default {
     Log,
@@ -34,5 +34,5 @@ export default {
     SessionMonitor,
     Global,
     AutomaticRenewStyle,
-    ContinuousSignInManager
+    ContinuousSigninManager
 };

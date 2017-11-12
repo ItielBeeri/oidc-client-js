@@ -2,7 +2,7 @@ import Log from './Log';
 import UserManager from './UserManager';
 import AutomaticRenewStyle from './AutomaticRenewStyle'
 
-export default class ContinuousSignInManager {
+export default class ContinuousSigninManager {
     constructor(settings = {},
         AutomaticRenewServiceCtor,
         SessionMonitorCtor,
