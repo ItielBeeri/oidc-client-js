@@ -19,18 +19,18 @@ export default class ContinuousSignInManager {
     initialize() {
         return this._userManager.getUser().then(user => {
             if (user && !user.expired) {
-                Log.debug("a valid user was found on AlwaysSignedInUserManager initialization: " + user.profile.sub);
+                Log.debug("a valid user was found on ContinuousSignInManager initialization: " + user.profile.sub);
                 return user;
             } else {
-                this._userManager.signinSilent().then(user => {
-                    Log.info("authentication was performed silently on AlwaysSignedInUserManager initialization. User: " + user.profile.sub);
+                return this._userManager.signinSilent().then(user => {
+                    Log.info("authentication was performed silently on ContinuousSignInManager initialization. User: " + user.profile.sub);
                     return user;
                 }, err => {
-                    Log.info("signinSilent has failed on AlwaysSignedInUserManager initialization. Falling back to signinRedirect. Failure: " + err);
-                    this._userManager.signinRedirect().then(() => {
+                    Log.info("signinSilent has failed on ContinuousSignInManager initialization. Falling back to signinRedirect. Failure: " + err);
+                    return this._userManager.signinRedirect().then(() => {
                         Log.info("redirecting to identity provider");
                     }, err => {
-                        Log.error("on AlwaysSignedInUserManager initialization, signinRedirect has failed. Any subsequent API call might fail to authenticate itself. Failure: " + err);
+                        Log.error("on ContinuousSignInManager initialization, signinRedirect has failed. Any subsequent API call might fail to authenticate itself. Failure: " + err);
                         throw err;
                     });
                 });
